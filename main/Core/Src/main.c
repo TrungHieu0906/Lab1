@@ -47,13 +47,58 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+const uint8_t digit_table[10] = {
+    0b1000000, // 0
+    0b1111001, // 1
+    0b0100100, // 2
+    0b0110000, // 3
+    0b0011001, // 4
+    0b0010010, // 5
+    0b0000010, // 6
+    0b1111000, // 7
+    0b0000000, // 8
+    0b0010000  // 9
+};
 
+// Mảng chứa thông tin từng chân A–G
+GPIO_TypeDef* seg_port[7] = {
+    LED_7SEG_A_GPIO_Port,
+    LED_7SEG_B_GPIO_Port,
+    LED_7SEG_C_GPIO_Port,
+    LED_7SEG_D_GPIO_Port,
+    LED_7SEG_E_GPIO_Port,
+    LED_7SEG_F_GPIO_Port,
+    LED_7SEG_G_GPIO_Port
+};
+
+uint16_t seg_pin[7] = {
+    LED_7SEG_A_Pin,
+    LED_7SEG_B_Pin,
+    LED_7SEG_C_Pin,
+    LED_7SEG_D_Pin,
+    LED_7SEG_E_Pin,
+    LED_7SEG_F_Pin,
+    LED_7SEG_G_Pin
+};
+
+void display7SEG(int num) {
+    if (num < 0 || num > 9) return;
+    uint8_t pattern = digit_table[num];
+    for (int i = 0; i < 7; i++) {
+        if (pattern & (1 << i)) {
+            HAL_GPIO_WritePin(seg_port[i], seg_pin[i], SET);   // tắt
+        } else {
+            HAL_GPIO_WritePin(seg_port[i], seg_pin[i], RESET); // bật
+        }
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -83,16 +128,97 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  uint16_t sec = 0;
+  enum Color {
+	  RED,
+	  GREEN,
+	  YELLOW,
+  };
+
+  enum Color current_color_1 = GREEN;
+  enum Color current_color_2 = RED;
+
+  int countdown = 0;
   while (1)
   {
     /* USER CODE END WHILE */
+	  //TRAFFIC LIGHT 1
+	  	  if(sec < 3) {
+	  		  current_color_1= GREEN;
+	  		  countdown = 3 - sec;
+	  	  }
+	  	  else if(sec >= 3 && sec < 5) {
+	  		  current_color_1 = YELLOW;
+	  		  countdown = 5 - sec;
+	  	  }
+	  	  else {
+	  		  current_color_1 = RED;
+	  		  countdown = 10 -  sec;
+	  	  }
 
+	        switch(current_color_1) {
+	        case RED:
+	      	  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin,SET);
+	      	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
+	      	  HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
+	      	  break;
+	        case GREEN:
+	      	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, SET);
+	      	  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
+	      	  HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
+	      	  break;
+	        case YELLOW:
+	      	  HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
+	      	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
+	      	  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
+	      	  break;
+	        }
+
+	  	  //TRAFFIC LIGHT 2
+	  	  if(sec < 5) {
+	  	  	  current_color_2= RED;
+	  	  }
+	  	  else if(sec >= 5 && sec < 7) {
+	  	  	  current_color_2 = GREEN;
+	  	  }
+	  	  else {
+	  	  	  current_color_2 = YELLOW;
+	  	  }
+
+	        switch(current_color_2) {
+	        case RED:
+	      	  HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
+	      	  HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, RESET);
+	      	  HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
+	      	  break;
+	        case GREEN:
+	      	  HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, SET);
+	      	  HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
+	      	  HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
+	      	  break;
+	        case YELLOW:
+	      	  HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
+	      	  HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, RESET);
+	      	  HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
+	      	  break;
+	        }
+
+	        ++sec;
+	        if(sec > 9) sec = 0;
+
+	  	  //test 7SEG
+	  	  //if (countdown < 0) countdown = 9;
+	  	  display7SEG(countdown);
+
+	  	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -131,6 +257,47 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin|LED_YELLOW_1_Pin|LED_RED_1_Pin|LED_GREEN_2_Pin
+                          |LED_YELLOW_2_Pin|LED_RED_2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED_7SEG_A_Pin|LED_7SEG_B_Pin|LED_7SEG_C_Pin|LED_7SEG_D_Pin
+                          |LED_7SEG_E_Pin|LED_7SEG_F_Pin|LED_7SEG_G_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : LED_GREEN_1_Pin LED_YELLOW_1_Pin LED_RED_1_Pin LED_GREEN_2_Pin
+                           LED_YELLOW_2_Pin LED_RED_2_Pin */
+  GPIO_InitStruct.Pin = LED_GREEN_1_Pin|LED_YELLOW_1_Pin|LED_RED_1_Pin|LED_GREEN_2_Pin
+                          |LED_YELLOW_2_Pin|LED_RED_2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_7SEG_A_Pin LED_7SEG_B_Pin LED_7SEG_C_Pin LED_7SEG_D_Pin
+                           LED_7SEG_E_Pin LED_7SEG_F_Pin LED_7SEG_G_Pin */
+  GPIO_InitStruct.Pin = LED_7SEG_A_Pin|LED_7SEG_B_Pin|LED_7SEG_C_Pin|LED_7SEG_D_Pin
+                          |LED_7SEG_E_Pin|LED_7SEG_F_Pin|LED_7SEG_G_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 }
 
 /* USER CODE BEGIN 4 */
