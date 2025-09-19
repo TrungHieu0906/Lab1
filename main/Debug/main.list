@@ -187,35 +187,35 @@ int main(void)
  80001da:	683b      	ldr	r3, [r7, #0]
  80001dc:	2b02      	cmp	r3, #2
  80001de:	dd04      	ble.n	80001ea <main+0x9e>
-		              current_color = RED;
- 80001e0:	2300      	movs	r3, #0
+		              current_color = YELLOW;
+ 80001e0:	2302      	movs	r3, #2
  80001e2:	71fb      	strb	r3, [r7, #7]
 		              sec = 0;
  80001e4:	2300      	movs	r3, #0
  80001e6:	603b      	str	r3, [r7, #0]
  80001e8:	e014      	b.n	8000214 <main+0xc8>
 		          }
-		          else if (current_color == RED && sec >= 5) {
+		          else if (current_color == YELLOW && sec >= 2) {
  80001ea:	79fb      	ldrb	r3, [r7, #7]
- 80001ec:	2b00      	cmp	r3, #0
+ 80001ec:	2b02      	cmp	r3, #2
  80001ee:	d107      	bne.n	8000200 <main+0xb4>
  80001f0:	683b      	ldr	r3, [r7, #0]
- 80001f2:	2b04      	cmp	r3, #4
+ 80001f2:	2b01      	cmp	r3, #1
  80001f4:	dd04      	ble.n	8000200 <main+0xb4>
-		              current_color = YELLOW;
- 80001f6:	2302      	movs	r3, #2
+		              current_color = RED;
+ 80001f6:	2300      	movs	r3, #0
  80001f8:	71fb      	strb	r3, [r7, #7]
 		              sec = 0;
  80001fa:	2300      	movs	r3, #0
  80001fc:	603b      	str	r3, [r7, #0]
  80001fe:	e009      	b.n	8000214 <main+0xc8>
 		          }
-		          else if (current_color == YELLOW && sec >= 2) {
+		          else if (current_color == RED && sec >= 5) {
  8000200:	79fb      	ldrb	r3, [r7, #7]
- 8000202:	2b02      	cmp	r3, #2
+ 8000202:	2b00      	cmp	r3, #0
  8000204:	d1be      	bne.n	8000184 <main+0x38>
  8000206:	683b      	ldr	r3, [r7, #0]
- 8000208:	2b01      	cmp	r3, #1
+ 8000208:	2b04      	cmp	r3, #4
  800020a:	ddbb      	ble.n	8000184 <main+0x38>
 		              current_color = GREEN;
  800020c:	2301      	movs	r3, #1

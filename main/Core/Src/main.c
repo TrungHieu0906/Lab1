@@ -153,14 +153,14 @@ int main(void)
 
 		          // Chuyển trạng thái theo thời gian: GREEN=3s, RED=5s, YELLOW=2s
 		          if (current_color == GREEN && sec >= 3) {
-		              current_color = RED;
-		              sec = 0;
-		          }
-		          else if (current_color == RED && sec >= 5) {
 		              current_color = YELLOW;
 		              sec = 0;
 		          }
 		          else if (current_color == YELLOW && sec >= 2) {
+		              current_color = RED;
+		              sec = 0;
+		          }
+		          else if (current_color == RED && sec >= 5) {
 		              current_color = GREEN;
 		              sec = 0;
 		          }
