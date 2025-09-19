@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "clock.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -97,7 +97,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 0, minute = 0, second = 0;
+  int hour = 9, minute = 0, second = 0;
 
   while (1)
   {
@@ -106,9 +106,9 @@ int main(void)
 
 	          // Hiển thị clock
 	          displayClock(hour, minute, second);
-	          HAL_Delay(1000);
+	          HAL_Delay(20);
 
-	          // Cập nhật thời gian
+	          // Cập nhật th�?i gian
 	          second++;
 	          if (second >= 12) {
 	              second = 0;

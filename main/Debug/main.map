@@ -1980,11 +1980,12 @@ LOAD d:/stm32 1.7/stm32cubeide_1.7.0/stm32cubeide/plugins/com.st.stm32cube.ide.m
  .text.displayClock
                 0x00000000080001cc       0x78 ./Core/Src/main.o
                 0x00000000080001cc                displayClock
- .text.main     0x0000000008000244       0x62 ./Core/Src/main.o
+ .text.main     0x0000000008000244       0x60 ./Core/Src/main.o
                 0x0000000008000244                main
  .text.SystemClock_Config
-                0x00000000080002a6       0x76 ./Core/Src/main.o
-                0x00000000080002a6                SystemClock_Config
+                0x00000000080002a4       0x76 ./Core/Src/main.o
+                0x00000000080002a4                SystemClock_Config
+ *fill*         0x000000000800031a        0x2 
  .text.MX_GPIO_Init
                 0x000000000800031c       0x68 ./Core/Src/main.o
  .text.Error_Handler
