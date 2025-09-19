@@ -275,7 +275,7 @@ int main(void)
  800026c:	2014      	movs	r0, #20
  800026e:	f000 f977 	bl	8000560 <HAL_Delay>
 
-	          // Cập nhật thời gian
+	          // Cập nhật th�?i gian
 	          second++;
  8000272:	687b      	ldr	r3, [r7, #4]
  8000274:	3301      	adds	r3, #1

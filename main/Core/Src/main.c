@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "clock.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -108,7 +108,7 @@ int main(void)
 	          displayClock(hour, minute, second);
 	          HAL_Delay(20);
 
-	          // Cập nhật th�?i gian
+	          // Cập nhật th�?i gian
 	          second++;
 	          if (second >= 12) {
 	              second = 0;
