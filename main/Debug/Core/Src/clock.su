@@ -1,0 +1,4 @@
+clock.c:24:6:testAllLEDs	16	static
+clock.c:34:6:clearAllClock	16	static
+clock.c:42:6:setNumberOnClock	16	static
+clock.c:50:6:clearNumberOnClock	16	static
