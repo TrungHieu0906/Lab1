@@ -97,7 +97,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 9, minute = 0, second = 0;
+  int hour = 0, minute = 0, second = 0;
 
   while (1)
   {
@@ -106,13 +106,8 @@ int main(void)
 
 	          // Hiển thị clock
 	          displayClock(hour, minute, second);
-	          HAL_Delay(20);
+	          HAL_Delay(1000);
 
-<<<<<<< Updated upstream
-	          // Cập nhật th�?i gian
-=======
-
->>>>>>> Stashed changes
 	          second++;
 	          if (second >= 12) {
 	              second = 0;
