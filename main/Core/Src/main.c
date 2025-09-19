@@ -97,30 +97,22 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 0, minute = 0, second = 0;
+
 
   while (1)
   {
+      //EX9
+	  // Bật toàn bộ LED trước
+	      for (int i = 0; i < 12; i++) {
+	        setNumberOnClock(i);
+	      }
+	      HAL_Delay(1000);
 
-	          // testAllLEDs();
-
-	          // Hiển thị clock
-	          displayClock(hour, minute, second);
-	          HAL_Delay(1000);
-
-	          // Cập nhật thời gian
-	          second++;
-	          if (second >= 12) {
-	              second = 0;
-	              minute++;
-	          }
-	          if (minute >= 12) {
-	              minute = 0;
-	              hour++;
-	          }
-	          if (hour >= 12) {
-	              hour = 0;
-	          }
+	      // Tắt lần lượt từng LED
+	      for (int i = 0; i < 12; i++) {
+	        clearNumberOnClock(i);
+	        HAL_Delay(500);
+	      }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
