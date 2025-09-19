@@ -97,30 +97,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 0, minute = 0, second = 0;
 
   while (1)
   {
 	  // Test bài 6
-	          // testAllLEDs();
+	  // Bài 6: Test toàn bộ LED lần lượt
+	          testAllLEDs();
 
-	          // Hiển thị clock
-	          displayClock(hour, minute, second);
+	          // Sau khi chạy hết 12 LED thì delay 1s rồi lặp lại
 	          HAL_Delay(1000);
-
-	          // Cập nhật thời gian
-	          second++;
-	          if (second >= 12) {
-	              second = 0;
-	              minute++;
-	          }
-	          if (minute >= 12) {
-	              minute = 0;
-	              hour++;
-	          }
-	          if (hour >= 12) {
-	              hour = 0;
-	          }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
