@@ -108,7 +108,11 @@ int main(void)
 	          displayClock(hour, minute, second);
 	          HAL_Delay(20);
 
+<<<<<<< Updated upstream
 	          // Cập nhật th�?i gian
+=======
+
+>>>>>>> Stashed changes
 	          second++;
 	          if (second >= 12) {
 	              second = 0;
