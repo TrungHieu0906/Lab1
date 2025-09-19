@@ -101,7 +101,7 @@ int main(void)
 
   while (1)
   {
-	  // Test bài 6
+
 	          // testAllLEDs();
 
 	          // Hiển thị clock

@@ -262,7 +262,7 @@ int main(void)
  800025e:	2300      	movs	r3, #0
  8000260:	607b      	str	r3, [r7, #4]
   {
-	  // Test bài 6
+
 	          // testAllLEDs();
 
 	          // Hiển thị clock
