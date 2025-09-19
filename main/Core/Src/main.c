@@ -135,29 +135,35 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
+      HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
+      HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
 
-     HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
-     HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
-     HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
-     HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
+      enum Color { RED, GREEN, YELLOW } current_color = RED;
+      int sec = 0;
   while (1)
   {
     /* USER CODE END WHILE */
-	  // Bật LED đỏ, tắt LED vàng
-	         HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, SET);
-	         HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
-	         HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
-	         HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
+	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, (current_color == GREEN) ? SET : RESET);
+	          HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, (current_color == RED) ? SET : RESET);
+	          HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, (current_color == YELLOW) ? SET : RESET);
 
-	         HAL_Delay(2000); // giữ 2 giây
+	          HAL_Delay(1000); // delay 1 giây
+	          sec++;
 
-	         // Bật LED vàng, tắt LED đỏ
-	         HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
-	         HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
-	         HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
-	         HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
-
-	         HAL_Delay(2000); // giữ 2 giây
+	          // Chuyển trạng thái theo thời gian: GREEN=3s, RED=5s, YELLOW=2s
+	          if (current_color == GREEN && sec >= 3) {
+	              current_color = RED;
+	              sec = 0;
+	          }
+	          else if (current_color == RED && sec >= 5) {
+	              current_color = YELLOW;
+	              sec = 0;
+	          }
+	          else if (current_color == YELLOW && sec >= 2) {
+	              current_color = GREEN;
+	              sec = 0;
+	          }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
