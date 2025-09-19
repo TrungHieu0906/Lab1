@@ -136,89 +136,28 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  uint16_t sec = 0;
-  enum Color {
-	  RED,
-	  GREEN,
-	  YELLOW,
-  };
-
-  enum Color current_color_1 = GREEN;
-  enum Color current_color_2 = RED;
-
-  int countdown = 0;
+     HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
+     HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
+     HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
+     HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
   while (1)
   {
     /* USER CODE END WHILE */
-	  //TRAFFIC LIGHT 1
-	  	  if(sec < 3) {
-	  		  current_color_1= GREEN;
-	  		  countdown = 3 - sec;
-	  	  }
-	  	  else if(sec >= 3 && sec < 5) {
-	  		  current_color_1 = YELLOW;
-	  		  countdown = 5 - sec;
-	  	  }
-	  	  else {
-	  		  current_color_1 = RED;
-	  		  countdown = 10 -  sec;
-	  	  }
+	  // Bật LED đỏ, tắt LED vàng
+	         HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, SET);
+	         HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
+	         HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
+	         HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
 
-	        switch(current_color_1) {
-	        case RED:
-	      	  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin,SET);
-	      	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
-	      	  HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
-	      	  break;
-	        case GREEN:
-	      	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, SET);
-	      	  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
-	      	  HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
-	      	  break;
-	        case YELLOW:
-	      	  HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
-	      	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
-	      	  HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
-	      	  break;
-	        }
+	         HAL_Delay(2000); // giữ 2 giây
 
-	  	  //TRAFFIC LIGHT 2
-	  	  if(sec < 5) {
-	  	  	  current_color_2= RED;
-	  	  }
-	  	  else if(sec >= 5 && sec < 7) {
-	  	  	  current_color_2 = GREEN;
-	  	  }
-	  	  else {
-	  	  	  current_color_2 = YELLOW;
-	  	  }
+	         // Bật LED vàng, tắt LED đỏ
+	         HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
+	         HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
+	         HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
+	         HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
 
-	        switch(current_color_2) {
-	        case RED:
-	      	  HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
-	      	  HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, RESET);
-	      	  HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
-	      	  break;
-	        case GREEN:
-	      	  HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, SET);
-	      	  HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
-	      	  HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
-	      	  break;
-	        case YELLOW:
-	      	  HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
-	      	  HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, RESET);
-	      	  HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
-	      	  break;
-	        }
-
-	        ++sec;
-	        if(sec > 9) sec = 0;
-
-	  	  //test 7SEG
-	  	  //if (countdown < 0) countdown = 9;
-	  	  display7SEG(countdown);
-
-	  	  HAL_Delay(1000);
+	         HAL_Delay(2000); // giữ 2 giây
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
