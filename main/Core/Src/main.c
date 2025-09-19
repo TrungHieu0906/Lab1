@@ -139,7 +139,7 @@ int main(void)
        HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
        HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
 
-       enum Color { RED, GREEN, YELLOW } current_color = RED;
+       enum Color { RED, GREEN, YELLOW } current_color = GREEN;
        int sec = 0;
   while (1)
   {

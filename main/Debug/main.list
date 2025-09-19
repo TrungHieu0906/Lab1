@@ -128,8 +128,8 @@ int main(void)
  8000176:	4828      	ldr	r0, [pc, #160]	; (8000218 <main+0xcc>)
  8000178:	f000 fc4e 	bl	8000a18 <HAL_GPIO_WritePin>
 
-       enum Color { RED, GREEN, YELLOW } current_color = RED;
- 800017c:	2300      	movs	r3, #0
+       enum Color { RED, GREEN, YELLOW } current_color = GREEN;
+ 800017c:	2301      	movs	r3, #1
  800017e:	71fb      	strb	r3, [r7, #7]
        int sec = 0;
  8000180:	2300      	movs	r3, #0
