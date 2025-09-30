@@ -144,14 +144,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, (current_color == GREEN) ? SET : RESET);
+	              HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, (current_color == GREEN) ? SET : RESET);
 		          HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, (current_color == RED) ? SET : RESET);
 		          HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, (current_color == YELLOW) ? SET : RESET);
-
-		          HAL_Delay(1000); // delay 1 giây
+		          HAL_Delay(1000);
 		          sec++;
 
-		          // Chuyển trạng thái theo thời gian: GREEN=3s, RED=5s, YELLOW=2s
+
 		          if (current_color == GREEN && sec >= 3) {
 		              current_color = YELLOW;
 		              sec = 0;
