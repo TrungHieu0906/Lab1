@@ -67,7 +67,7 @@ const uint8_t digit_table[10] = {
     0b0010000  // 9
 };
 
-// Mảng chứa thông tin từng chân A–G
+
 GPIO_TypeDef* seg_port[7] = {
     LED_7SEG_A_GPIO_Port,
     LED_7SEG_B_GPIO_Port,
