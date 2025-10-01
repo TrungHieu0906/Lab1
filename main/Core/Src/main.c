@@ -56,40 +56,6 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
-
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_TIM2_Init();
-  /* USER CODE BEGIN 2 */
   void display7SEG(int num) {
 	  switch(num) {
 	  case 0:
@@ -214,34 +180,69 @@ int main(void)
 		  break;
 	  }
   }
+/* USER CODE END 0 */
 
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM2_Init();
+  /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(100);//timerRun call every 10ms
-  setTimer2(50);
-  //setTimer3(6);
+  int hour = 15, minute = 8, second = 50;
+
+  void updateClockBuffer(){
+	  led_buffer[0] = hour / 10;
+	  led_buffer[1] = hour % 10;
+	  led_buffer[2] = minute / 10;
+	  led_buffer[3] = minute % 10;
+  }
 
   while (1)
   {
-	  if(timer1_flag == 1){
-		  setTimer1(100);
-		  //TODO
-		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-		  HAL_GPIO_TogglePin(DOT_GPIO_Port,DOT_Pin);
+	  second++;
+	  if (second >= 60){
+		  second = 0;
+		  minute++;
 	  }
-
-	  if(timer2_flag == 1){
-		  setTimer2(50);
-		  //TODO
-          update7SEG(index_led);
-		  index_led++;
-		  if (index_led > MAX_LED - 1) index_led = 0;
+	  if (minute >= 60){
+		      minute = 0;
+	  		  hour++;
 	  }
-
-
+	  if (hour >= 24){
+		  hour = 0;
+      }
+	  updateClockBuffer();
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -378,9 +379,23 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-int counter = 100;
+int counter = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	timerRun();
+	if(htim->Instance == TIM2){
+
+		if(counter % 25 == 0){
+			update7SEG(index_led);
+			index_led++;
+			if (index_led > MAX_LED - 1) index_led = 0;
+		}
+
+		if(counter % 100 == 0){
+			HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+			HAL_GPIO_TogglePin(DOT_GPIO_Port,DOT_Pin);
+		}
+		counter++;
+		if(counter >= 1000) counter = 0;
+	}
 }
 /* USER CODE END 4 */
 
