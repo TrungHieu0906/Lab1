@@ -6,13 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -186,6 +185,35 @@ int main(void)
 	  }
   }
 
+  const int MAX_LED = 4;
+  int index_led = 0;
+  int led_buffer[4] = {1, 2, 3, 4};
+  void update7SEG(int index){
+	  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
+	  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
+	  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
+	  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
+	  switch (index){
+	  case 0:
+		  display7SEG(led_buffer[index]);
+		  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
+		  break;
+	  case 1:
+		  display7SEG(led_buffer[index]);
+		  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
+		  break;
+	  case 2:
+		  display7SEG(led_buffer[index]);
+		  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, RESET);
+		  break;
+	  case 3:
+		  display7SEG(led_buffer[index]);
+		  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, RESET);
+		  break;
+	  default:
+		  break;
+	  }
+  }
 
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
@@ -195,7 +223,6 @@ int main(void)
   setTimer1(100);//timerRun call every 10ms
   setTimer2(50);
   //setTimer3(6);
-  float led_index = 0;
 
   while (1)
   {
@@ -209,45 +236,9 @@ int main(void)
 	  if(timer2_flag == 1){
 		  setTimer2(50);
 		  //TODO
-		  if(led_index == 0) {
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-			  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-			  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-
-			  display7SEG(1);
-
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
-		  } else if(led_index == 1) {
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-			  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-			  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-
-			  display7SEG(2);
-
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
-		  } else if(led_index == 2) {
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-			  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-			  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-
-			  display7SEG(3);
-
-			  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, RESET);
-		  } else if(led_index == 3) {
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-			  HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-			  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-
-			  display7SEG(0);
-
-			  HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, RESET);
-		  }
-		  led_index++;
-		  if (led_index > 3) led_index = 0;
+          update7SEG(index_led);
+		  index_led++;
+		  if (index_led > MAX_LED - 1) index_led = 0;
 	  }
 
 
@@ -423,5 +414,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
