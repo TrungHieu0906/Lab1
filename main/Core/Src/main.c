@@ -198,36 +198,31 @@ static void MX_GPIO_Init(void);
   };
 
   // Hàm updateLEDMatrix (quét từng cột giống 7SEG)
-  void updateLEDMatrix(int index) {
+  void updateLEDMatrix(int index){
       // Tắt tất cả cột trước
-      HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
-      HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
-      HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
-      HAL_GPIO_WritePin(ENM3_GPIO_Port, ENM3_Pin, SET);
-      HAL_GPIO_WritePin(ENM4_GPIO_Port, ENM4_Pin, SET);
-      HAL_GPIO_WritePin(ENM5_GPIO_Port, ENM5_Pin, SET);
-      HAL_GPIO_WritePin(ENM6_GPIO_Port, ENM6_Pin, SET);
-      HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
+      HAL_GPIO_WritePin(GPIOA, ENM0_Pin|ENM1_Pin|ENM2_Pin|ENM3_Pin|
+                                 ENM4_Pin|ENM5_Pin|ENM6_Pin|ENM7_Pin, GPIO_PIN_SET);
 
-      // Ghi dữ liệu hàng (ROW0..ROW7) ứng với index cột
-      for(int row=0; row<8; row++){
-          int bit_val = (matrix_buffer[index] >> row) & 0x01;
-          if(bit_val == 1)
-              HAL_GPIO_WritePin(GPIOB, (1 << (8+row)), GPIO_PIN_SET); // PB8..PB15
-          else
-              HAL_GPIO_WritePin(GPIOB, (1 << (8+row)), GPIO_PIN_RESET);
+      // Xuất dữ liệu hàng (PB8–PB15) từ buffer
+      uint8_t data = matrix_buffer[index];
+      for(int i=0; i<8; i++){
+          if(data & (1<<i)){
+              HAL_GPIO_WritePin(GPIOB, (1<<(8+i)), GPIO_PIN_SET);
+          }else{
+              HAL_GPIO_WritePin(GPIOB, (1<<(8+i)), GPIO_PIN_RESET);
+          }
       }
 
       // Bật cột tương ứng
       switch(index){
-          case 0: HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, RESET); break;
-          case 1: HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, RESET); break;
-          case 2: HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, RESET); break;
-          case 3: HAL_GPIO_WritePin(ENM3_GPIO_Port, ENM3_Pin, RESET); break;
-          case 4: HAL_GPIO_WritePin(ENM4_GPIO_Port, ENM4_Pin, RESET); break;
-          case 5: HAL_GPIO_WritePin(ENM5_GPIO_Port, ENM5_Pin, RESET); break;
-          case 6: HAL_GPIO_WritePin(ENM6_GPIO_Port, ENM6_Pin, RESET); break;
-          case 7: HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, RESET); break;
+          case 0: HAL_GPIO_WritePin(GPIOA, ENM0_Pin, GPIO_PIN_RESET); break;
+          case 1: HAL_GPIO_WritePin(GPIOA, ENM1_Pin, GPIO_PIN_RESET); break;
+          case 2: HAL_GPIO_WritePin(GPIOA, ENM2_Pin, GPIO_PIN_RESET); break;
+          case 3: HAL_GPIO_WritePin(GPIOA, ENM3_Pin, GPIO_PIN_RESET); break;
+          case 4: HAL_GPIO_WritePin(GPIOA, ENM4_Pin, GPIO_PIN_RESET); break;
+          case 5: HAL_GPIO_WritePin(GPIOA, ENM5_Pin, GPIO_PIN_RESET); break;
+          case 6: HAL_GPIO_WritePin(GPIOA, ENM6_Pin, GPIO_PIN_RESET); break;
+          case 7: HAL_GPIO_WritePin(GPIOA, ENM7_Pin, GPIO_PIN_RESET); break;
           default: break;
       }
   }
@@ -288,9 +283,10 @@ int main(void)
 	  }
   }
 
-  setTimer1(100);
-  setTimer2(25);
-  setTimer4(2);
+  setTimer1(500);
+  setTimer2(50);
+  setTimer3(100);
+  setTimer4(50);
   while (1)
   {
 
@@ -391,7 +387,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 7999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 499;
+  htim2.Init.Period = 9;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
