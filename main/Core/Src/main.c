@@ -180,21 +180,6 @@ static void MX_TIM2_Init(void);
 		  break;
 	  }
   }
-  int timer0_counter = 0;
-  int timer0_flag = 0;
-  int TIMER_CYCLE = 10;
-
-  void setTimer0(int duration) {
-      timer0_counter = duration / TIMER_CYCLE;
-      timer0_flag = 0;
-  }
-
-  void timer_run() {
-      if (timer0_counter > 0) {
-          timer0_counter--;
-          if (timer0_counter == 0) timer0_flag = 1;
-      }
-  }
 /* USER CODE END 0 */
 
 /**
@@ -234,35 +219,50 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   int hour = 15, minute = 8, second = 50;
-  setTimer0(1000);
 
   void updateClockBuffer(){
-	  led_buffer[0] = hour / 10;
-	  led_buffer[1] = hour % 10;
-	  led_buffer[2] = minute / 10;
-	  led_buffer[3] = minute % 10;
+	  if(hour < 10) {
+		  led_buffer[0] = 0;
+		  led_buffer[1] = hour;
+	  } else {
+		  led_buffer[0] = hour / 10;
+		  led_buffer[1] = hour - (hour / 10) * 10;
+	  }
+
+	  if(minute < 10) {
+		  led_buffer[2] = 0;
+		  led_buffer[3] = minute;
+	  } else {
+		  led_buffer[2] = minute / 10;
+		  led_buffer[3] = minute - (minute / 10) * 10;
+	  }
   }
 
+  setTimer1(100);
+  setTimer3(1000);
   while (1)
   {
-	  while (1) {
-	      if (timer0_flag == 1) {
-	          second++;
-	          if (second >= 60) {
-	              second = 0;
-	              minute++;
-	          }
-	          if (minute >= 60) {
-	              minute = 0;
-	              hour++;
-	          }
-	          if (hour >= 24) {
-	              hour = 0;
-	          }
-	          updateClockBuffer();
-	          setTimer0(1000);
-	      }
+	  if(timer3_flag == 1) {
+		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		  setTimer3(2000);
 	  }
+	  if(timer1_flag == 1) {
+		  setTimer1(100);
+		  second++;
+		  if (second >= 60){
+			  second = 0;
+			  minute++;
+		  }
+		  if (minute >= 60){
+			      minute = 0;
+		  		  hour++;
+		  }
+		  if (hour >= 24){
+			  hour = 0;
+	      }
+		  updateClockBuffer();
+	  }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -401,9 +401,22 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 int counter = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-    if(htim->Instance == TIM2){
-        timer_run();
-    }
+	if(htim->Instance == TIM2){
+		timerRun();
+		//quet led moi 25ms
+		if(counter % 25 == 0){
+			update7SEG(index_led);
+			index_led++;
+			if (index_led > MAX_LED - 1) index_led = 0;
+		}
+		//dot va led blink moi 1000ms
+		if(counter % 100 == 0){
+			HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+			HAL_GPIO_TogglePin(DOT_GPIO_Port,DOT_Pin);
+		}
+		counter++;
+		if(counter >= 1000) counter = 0;
+	}
 }
 /* USER CODE END 4 */
 
