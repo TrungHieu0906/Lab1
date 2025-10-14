@@ -48,8 +48,8 @@ TIM_HandleTypeDef htim2;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_TIM2_Init(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -180,52 +180,75 @@ static void MX_GPIO_Init(void);
 		  break;
 	  }
   }
-  // LED MATRIX
+
   const int MAX_LED_MATRIX = 8;
   int index_led_matrix = 0;
-
-  // Mỗi phần tử là dữ liệu cho 1 cột (COL) => bit = hàng (ROW0..ROW7)
-  // Ví dụ hiển thị chữ "A"
   uint8_t matrix_buffer[8] = {
-      0b00111100,   // Row 0
-      0b01100110,   // Row 1
-      0b11000011,   // Row 2
-      0b11000011,   // Row 3
-      0b11111111,   // Row 4
-      0b11000011,   // Row 5
-      0b11000011,   // Row 6
-      0b11000011    // Row 7
+      0x0E, // col 0 (00001110)
+      0x11, // col 1 (00010001)
+      0x11, // col 2 (00010001)
+      0x1F, // col 3 (00011111)
+      0x11, // col 4 (00010001)
+      0x11, // col 5 (00010001)
+      0x11, // col 6 (00010001)
+      0x00  // col 7
   };
+  void updateLEDMatrix(int index) {
+	    HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
+	    HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
+	    HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
+	    HAL_GPIO_WritePin(ENM3_GPIO_Port, ENM3_Pin, SET);
+	    HAL_GPIO_WritePin(ENM4_GPIO_Port, ENM4_Pin, SET);
+	    HAL_GPIO_WritePin(ENM5_GPIO_Port, ENM5_Pin, SET);
+	    HAL_GPIO_WritePin(ENM6_GPIO_Port, ENM6_Pin, SET);
+	    HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 
-  // Hàm updateLEDMatrix (quét từng cột giống 7SEG)
-  void updateLEDMatrix(int index){
-      // Tắt tất cả cột trước
-      HAL_GPIO_WritePin(GPIOA, ENM0_Pin|ENM1_Pin|ENM2_Pin|ENM3_Pin|
-                                 ENM4_Pin|ENM5_Pin|ENM6_Pin|ENM7_Pin, GPIO_PIN_SET);
+	    uint8_t data = matrix_buffer[index];
 
-      // Xuất dữ liệu hàng (PB8–PB15) từ buffer
-      uint8_t data = matrix_buffer[index];
-      for(int i=0; i<8; i++){
-          if(data & (1<<i)){
-              HAL_GPIO_WritePin(GPIOB, (1<<(8+i)), GPIO_PIN_SET);
-          }else{
-              HAL_GPIO_WritePin(GPIOB, (1<<(8+i)), GPIO_PIN_RESET);
-          }
-      }
+	    for (int row = 0; row < 8; row++) {
+	        if (data & (1 << (7-row)))
+	            HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_RESET);
+	        else
+	            HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_SET);
+	    }
 
-      // Bật cột tương ứng
-      switch(index){
-          case 0: HAL_GPIO_WritePin(GPIOA, ENM0_Pin, GPIO_PIN_RESET); break;
-          case 1: HAL_GPIO_WritePin(GPIOA, ENM1_Pin, GPIO_PIN_RESET); break;
-          case 2: HAL_GPIO_WritePin(GPIOA, ENM2_Pin, GPIO_PIN_RESET); break;
-          case 3: HAL_GPIO_WritePin(GPIOA, ENM3_Pin, GPIO_PIN_RESET); break;
-          case 4: HAL_GPIO_WritePin(GPIOA, ENM4_Pin, GPIO_PIN_RESET); break;
-          case 5: HAL_GPIO_WritePin(GPIOA, ENM5_Pin, GPIO_PIN_RESET); break;
-          case 6: HAL_GPIO_WritePin(GPIOA, ENM6_Pin, GPIO_PIN_RESET); break;
-          case 7: HAL_GPIO_WritePin(GPIOA, ENM7_Pin, GPIO_PIN_RESET); break;
-          default: break;
-      }
+	  switch (index){
+	      case 0:
+	    	  HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, RESET);
+	    	  break;
+	      case 1:
+	    	  HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, RESET);
+	      	  break;
+	      case 2:
+	    	  HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, RESET);
+	      	  break;
+	      case 3:
+	    	  HAL_GPIO_WritePin(ENM3_GPIO_Port, ENM3_Pin, RESET);
+	      	  break;
+	      case 4:
+	    	  HAL_GPIO_WritePin(ENM4_GPIO_Port, ENM4_Pin, RESET);
+	      	  break;
+	      case 5:
+	    	  HAL_GPIO_WritePin(ENM5_GPIO_Port, ENM5_Pin, RESET);
+	      	  break;
+	      case 6:
+	    	  HAL_GPIO_WritePin(ENM6_GPIO_Port, ENM6_Pin, RESET);
+	      	  break;
+	      case 7:
+	    	  HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, RESET);
+	      	  break;
+	      default:
+	    	  break;
+	  }
   }
+
+  void shiftDown(uint8_t newCol) {
+      for (int i = MAX_LED_MATRIX - 1; i > 0; i--) {
+          matrix_buffer[i] = matrix_buffer[i-1];
+      }
+      matrix_buffer[0] = newCol;
+  }
+
 /* USER CODE END 0 */
 
 /**
@@ -234,6 +257,7 @@ static void MX_GPIO_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -255,15 +279,15 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_TIM2_Init();
   MX_GPIO_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 15, minute = 8, second = 50;
+  int hour = 23, minute = 59, second = 55;/**/
 
   void updateClockBuffer(){
 	  if(hour < 10) {
@@ -283,17 +307,24 @@ int main(void)
 	  }
   }
 
-  setTimer1(500);
-  setTimer2(50);
-  setTimer3(100);
-  setTimer4(50);
+  setTimer1(100);
+  setTimer2(25);
+  setTimer3(25);
+  int state = 0;
   while (1)
   {
-
+//	  if(timer3_flag == 1) {
+//		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+//		  setTimer3(100);
+//	  }
 	  if(timer1_flag == 1) {
 		  setTimer1(100);
+
+		  //chop tat led va dot
 		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 		  HAL_GPIO_TogglePin(DOT_GPIO_Port,DOT_Pin);
+
+		  //tang gia tri cac bien thoi gian
 		  second++;
 		  if (second >= 60){
 			  second = 0;
@@ -311,18 +342,31 @@ int main(void)
 
 	  if(timer2_flag == 1){
 		  setTimer2(25);
-
+		  //TODO
           update7SEG(index_led);
 		  index_led++;
 		  if (index_led > MAX_LED - 1) index_led = 0;
-
+		  //timer3
+	      updateLEDMatrix(index_led_matrix);
+	      index_led_matrix++;
+	      if (index_led_matrix >= MAX_LED_MATRIX) index_led_matrix = 0;
 	  }
-	  if(timer4_flag == 1){
-	          setTimer4(2);
-	          updateLEDMatrix(index_led_matrix);
-	          index_led_matrix++;
-	          if(index_led_matrix >= MAX_LED_MATRIX) index_led_matrix = 0;
-	      }
+
+//	  if (timer3_flag == 1){
+//	      setTimer3(25); // quét 1 cột mỗi 25ms
+////	      updateLEDMatrix(index_led_matrix);
+////	      index_led_matrix++;
+////	      if (index_led_matrix >= MAX_LED_MATRIX) index_led_matrix = 0;
+//	  }
+	    if (state == 0 && timer2_flag == 1) {
+	        state = 1;
+	        setTimer3(200);  //bd dich
+	    }
+
+	    if (state == 1 && timer3_flag == 1) {
+	        shiftDown(0x00);
+	        setTimer3(200);
+	    }
 
     /* USER CODE END WHILE */
 
@@ -351,6 +395,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -419,6 +464,9 @@ static void MX_TIM2_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -462,6 +510,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -469,7 +520,20 @@ int counter = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 		timerRun();
-
+//		//quet led moi 25ms
+//		if(counter % 25 == 0){
+//			update7SEG(index_led);
+//			index_led++;
+//			if (index_led > MAX_LED - 1) index_led = 0;
+//		}
+//		//dot va led blink moi 1000ms
+//		if(counter % 100 == 0){
+//			HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+//			HAL_GPIO_TogglePin(DOT_GPIO_Port,DOT_Pin);
+//		}
+//		counter++;
+//		if(counter >= 1000) counter = 0;
+//	}
 }
 /* USER CODE END 4 */
 
@@ -487,8 +551,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
@@ -504,5 +567,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
