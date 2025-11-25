@@ -1,0 +1,4 @@
+uart.c:25:6:uart_init_interrupt	8	static
+uart.c:31:6:get_uart_message	16	static
+uart.c:49:6:fsm_command_parser	8	static
+uart.c:85:6:fsm_uart_communication	16	static
